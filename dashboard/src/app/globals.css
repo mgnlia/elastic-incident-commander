@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-dark-900 text-gray-100;
+  }
+}
+
+@layer components {
+  .agent-card {
+    @apply bg-dark-700 border border-dark-500 rounded-xl p-6 hover:border-elastic-teal/50 transition-all duration-300;
+  }
+  .severity-p1 {
+    @apply bg-red-500/20 text-red-400 border border-red-500/30;
+  }
+  .severity-p2 {
+    @apply bg-orange-500/20 text-orange-400 border border-orange-500/30;
+  }
+  .severity-p3 {
+    @apply bg-yellow-500/20 text-yellow-400 border border-yellow-500/30;
+  }
+  .severity-p4 {
+    @apply bg-blue-500/20 text-blue-400 border border-blue-500/30;
+  }
+  .glow-teal {
+    box-shadow: 0 0 20px rgba(0, 191, 179, 0.15);
+  }
+  .glow-pink {
+    box-shadow: 0 0 20px rgba(240, 78, 152, 0.15);
+  }
+}
