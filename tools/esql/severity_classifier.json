@@ -1,0 +1,14 @@
+{
+  "name": "severity_classifier",
+  "type": "esql",
+  "description": "Classify the severity of an incident (P1-P4) based on error rates, unique error types, and number of affected hosts for a given service. P1 = critical multi-host outage, P4 = informational.",
+  "query": "FROM logs-* | WHERE @timestamp > NOW() - 5 minutes AND service.name == ?service_name AND log.level IN (\"error\", \"critical\", \"fatal\") | STATS error_count = COUNT(*), unique_errors = COUNT_DISTINCT(error.message), affected_hosts = COUNT_DISTINCT(host.name) | EVAL severity = CASE(error_count > 100 AND affected_hosts > 3, \"P1\", error_count > 50 OR affected_hosts > 1, \"P2\", error_count > 10, \"P3\", \"P4\")",
+  "parameters": [
+    {
+      "name": "service_name",
+      "type": "string",
+      "description": "The name of the service to classify severity for (e.g., 'payment-service', 'user-service')",
+      "required": true
+    }
+  ]
+}

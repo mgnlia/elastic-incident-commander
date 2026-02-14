@@ -1,0 +1,14 @@
+{
+  "name": "metric_anomaly",
+  "type": "esql",
+  "description": "Detect resource anomalies (CPU, memory) for a service. Flags hosts where CPU or memory exceeds 90% in the last 30 minutes.",
+  "query": "FROM metrics-* | WHERE @timestamp > NOW() - 30 minutes AND service.name == ?service_name | STATS avg_cpu = AVG(system.cpu.total.pct), max_cpu = MAX(system.cpu.total.pct), avg_memory = AVG(system.memory.used.pct), max_memory = MAX(system.memory.used.pct) BY host.name | WHERE max_cpu > 0.9 OR max_memory > 0.9 | SORT max_cpu DESC",
+  "parameters": [
+    {
+      "name": "service_name",
+      "type": "string",
+      "description": "The service to check metrics for",
+      "required": true
+    }
+  ]
+}

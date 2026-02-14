@@ -1,0 +1,14 @@
+{
+  "name": "log_analyzer",
+  "type": "esql",
+  "description": "Analyze error logs for a service within a time window. Groups by error message to find the most frequent errors, with first and last seen timestamps.",
+  "query": "FROM logs-* | WHERE @timestamp > NOW() - 1 hour AND service.name == ?service_name AND log.level IN (\"error\", \"warn\", \"critical\") | STATS count = COUNT(*), first_seen = MIN(@timestamp), last_seen = MAX(@timestamp) BY error.message | SORT count DESC | LIMIT 10",
+  "parameters": [
+    {
+      "name": "service_name",
+      "type": "string",
+      "description": "The service to analyze logs for",
+      "required": true
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "incident_timeline",
+  "type": "esql",
+  "description": "Build a chronological timeline of events during an incident. Combines logs and alerts for affected services between incident start and end times.",
+  "query": "FROM logs-*,.alerts-* | WHERE @timestamp > NOW() - 1 hour AND service.name == ?service_name | SORT @timestamp ASC | KEEP @timestamp, service.name, log.level, message, kibana.alert.rule.name | LIMIT 100",
+  "parameters": [
+    {
+      "name": "service_name",
+      "type": "string",
+      "description": "The service to build timeline for",
+      "required": true
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "name": "alert_correlator",
+  "type": "esql",
+  "description": "Find all active alerts from the last 30 minutes, grouped by category. Shows alert count, affected services, and rule names to identify correlated incidents.",
+  "query": "FROM .alerts-* | WHERE @timestamp > NOW() - 30 minutes AND kibana.alert.status == \"active\" | STATS alert_count = COUNT(*), services = VALUES(service.name), rule_names = VALUES(kibana.alert.rule.name) BY kibana.alert.rule.category | SORT alert_count DESC | LIMIT 20",
+  "parameters": []
+}

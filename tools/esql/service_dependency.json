@@ -1,0 +1,14 @@
+{
+  "name": "service_dependency",
+  "type": "esql",
+  "description": "Map service dependencies and their health. Shows downstream services with error rates and latency. Highlights dependencies with >10% error rate or >5s latency.",
+  "query": "FROM traces-apm* | WHERE @timestamp > NOW() - 15 minutes AND service.name == ?service_name | STATS call_count = COUNT(*), error_rate = AVG(CASE(event.outcome == \"failure\", 1, 0)), avg_duration = AVG(transaction.duration.us) BY service.target.name | WHERE error_rate > 0.1 OR avg_duration > 5000000 | SORT error_rate DESC",
+  "parameters": [
+    {
+      "name": "service_name",
+      "type": "string",
+      "description": "The service whose dependencies to check",
+      "required": true
+    }
+  ]
+}

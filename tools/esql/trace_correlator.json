@@ -1,0 +1,14 @@
+{
+  "name": "trace_correlator",
+  "type": "esql",
+  "description": "Follow a distributed trace across services. Shows the full request path with timing, service names, and outcomes for a specific trace ID.",
+  "query": "FROM traces-apm* | WHERE @timestamp > NOW() - 15 minutes AND trace.id == ?trace_id | SORT @timestamp ASC | KEEP @timestamp, service.name, transaction.name, transaction.duration.us, event.outcome, span.name | LIMIT 50",
+  "parameters": [
+    {
+      "name": "trace_id",
+      "type": "string",
+      "description": "The trace ID to follow across services",
+      "required": true
+    }
+  ]
+}

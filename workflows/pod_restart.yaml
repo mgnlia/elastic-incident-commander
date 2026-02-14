@@ -1,0 +1,43 @@
+# Pod Restart Workflow — Restarts failing pods and verifies recovery
+name: pod_restart
+description: Restart a failing pod in a Kubernetes namespace, wait for recovery, and log the action.
+triggers:
+  - type: manual
+steps:
+  - id: log_initiate
+    type: action
+    action_type: elasticsearch
+    params:
+      index: incidents-remediation
+      body:
+        "@timestamp": "{{now}}"
+        event.action: pod_restart
+        event.category: remediation
+        service.name: "{{service_name}}"
+        kubernetes.namespace: "{{namespace}}"
+        kubernetes.pod.name: "{{pod_name}}"
+        event.outcome: initiated
+  - id: execute_restart
+    type: action
+    action_type: webhook
+    params:
+      url: "{{k8s_api}}/api/v1/namespaces/{{namespace}}/pods/{{pod_name}}"
+      method: DELETE
+      headers:
+        Authorization: "Bearer {{k8s_token}}"
+  - id: wait_recovery
+    type: wait
+    duration: 30s
+  - id: log_complete
+    type: action
+    action_type: elasticsearch
+    params:
+      index: incidents-remediation
+      body:
+        "@timestamp": "{{now}}"
+        event.action: pod_restart
+        event.category: remediation
+        service.name: "{{service_name}}"
+        kubernetes.namespace: "{{namespace}}"
+        kubernetes.pod.name: "{{pod_name}}"
+        event.outcome: completed

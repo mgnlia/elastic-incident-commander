@@ -1,0 +1,47 @@
+# Slack Notification Workflow — Send incident updates to Slack
+name: slack_notify
+description: Send formatted incident status updates to the team Slack channel and log the notification.
+triggers:
+  - type: manual
+steps:
+  - id: send_update
+    type: action
+    action_type: webhook
+    params:
+      url: "{{slack_webhook}}"
+      method: POST
+      headers:
+        Content-Type: application/json
+      body:
+        blocks:
+          - type: header
+            text:
+              type: plain_text
+              text: "🚨 Incident Update — {{severity}}"
+          - type: section
+            fields:
+              - type: mrkdwn
+                text: "*Service:*\n{{service_name}}"
+              - type: mrkdwn
+                text: "*Severity:*\n{{severity}}"
+              - type: mrkdwn
+                text: "*Status:*\n{{status}}"
+              - type: mrkdwn
+                text: "*Updated:*\n{{now}}"
+          - type: section
+            text:
+              type: mrkdwn
+              text: "{{summary}}"
+  - id: log_notification
+    type: action
+    action_type: elasticsearch
+    params:
+      index: incidents-notifications
+      body:
+        "@timestamp": "{{now}}"
+        event.action: slack_notification
+        notification.channel: slack
+        event.severity: "{{severity}}"
+        service.name: "{{service_name}}"
+        notification.status: "{{status}}"
+        message: "{{summary}}"

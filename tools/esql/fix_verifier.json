@@ -1,0 +1,14 @@
+{
+  "name": "fix_verifier",
+  "type": "esql",
+  "description": "Verify whether a remediation action resolved the incident. Checks error count in the last 5 minutes and reports RESOLVED, IMPROVING, or STILL_FAILING.",
+  "query": "FROM logs-* | WHERE @timestamp > NOW() - 5 minutes AND service.name == ?service_name AND log.level IN (\"error\", \"critical\", \"fatal\") | STATS error_count = COUNT(*), unique_errors = COUNT_DISTINCT(error.message) | EVAL status = CASE(error_count == 0, \"RESOLVED\", error_count < 5, \"IMPROVING\", \"STILL_FAILING\")",
+  "parameters": [
+    {
+      "name": "service_name",
+      "type": "string",
+      "description": "The service to verify fix for",
+      "required": true
+    }
+  ]
+}

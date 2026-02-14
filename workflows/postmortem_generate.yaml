@@ -1,0 +1,38 @@
+# Postmortem Generator Workflow — Create post-incident reports
+name: postmortem_generate
+description: Generate and store a structured post-incident report with timeline, root cause, impact, and action items.
+triggers:
+  - type: manual
+steps:
+  - id: store_postmortem
+    type: action
+    action_type: elasticsearch
+    params:
+      index: incidents-postmortems
+      body:
+        "@timestamp": "{{now}}"
+        incident.id: "{{incident_id}}"
+        incident.severity: "{{severity}}"
+        incident.start_time: "{{incident_start}}"
+        incident.end_time: "{{incident_end}}"
+        incident.duration_minutes: "{{duration_minutes}}"
+        service.name: "{{service_name}}"
+        root_cause.category: "{{root_cause_category}}"
+        root_cause.description: "{{root_cause_description}}"
+        impact.description: "{{impact_description}}"
+        impact.affected_users: "{{affected_users}}"
+        timeline: "{{timeline_summary}}"
+        remediation.actions_taken: "{{actions_taken}}"
+        followup.action_items: "{{action_items}}"
+        postmortem.status: draft
+  - id: log_postmortem
+    type: action
+    action_type: elasticsearch
+    params:
+      index: incidents-log
+      body:
+        "@timestamp": "{{now}}"
+        event.action: postmortem_generated
+        incident.id: "{{incident_id}}"
+        service.name: "{{service_name}}"
+        message: "Post-incident report generated for {{incident_id}}"

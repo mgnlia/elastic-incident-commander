@@ -1,0 +1,47 @@
+# Scale Service Workflow — Horizontal scale-up for resource-constrained services
+name: scale_service
+description: Scale up a service by increasing replica count, then verify the scaling action.
+triggers:
+  - type: manual
+steps:
+  - id: log_initiate
+    type: action
+    action_type: elasticsearch
+    params:
+      index: incidents-remediation
+      body:
+        "@timestamp": "{{now}}"
+        event.action: scale_service
+        event.category: remediation
+        service.name: "{{service_name}}"
+        kubernetes.namespace: "{{namespace}}"
+        scaling.from: "{{current_replicas}}"
+        scaling.to: "{{target_replicas}}"
+        event.outcome: initiated
+  - id: execute_scale
+    type: action
+    action_type: webhook
+    params:
+      url: "{{k8s_api}}/apis/apps/v1/namespaces/{{namespace}}/deployments/{{deployment_name}}/scale"
+      method: PATCH
+      headers:
+        Content-Type: application/strategic-merge-patch+json
+        Authorization: "Bearer {{k8s_token}}"
+      body:
+        spec:
+          replicas: "{{target_replicas}}"
+  - id: wait_scale
+    type: wait
+    duration: 60s
+  - id: log_complete
+    type: action
+    action_type: elasticsearch
+    params:
+      index: incidents-remediation
+      body:
+        "@timestamp": "{{now}}"
+        event.action: scale_service
+        event.category: remediation
+        service.name: "{{service_name}}"
+        scaling.to: "{{target_replicas}}"
+        event.outcome: completed

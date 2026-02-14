@@ -1,0 +1,34 @@
+# Escalation Workflow — Pages on-call for P1/P2 incidents
+name: escalation
+description: Escalate high-severity incidents by paging on-call and logging the escalation event.
+triggers:
+  - type: manual
+steps:
+  - id: check_severity
+    type: if
+    condition: "{{severity}} in ['P1', 'P2']"
+    then:
+      - id: page_oncall
+        type: action
+        action_type: webhook
+        params:
+          url: "{{pagerduty_webhook}}"
+          method: POST
+          headers:
+            Content-Type: application/json
+          body:
+            severity: "{{severity}}"
+            service: "{{service_name}}"
+            summary: "{{incident_summary}}"
+            timestamp: "{{now}}"
+  - id: log_escalation
+    type: action
+    action_type: elasticsearch
+    params:
+      index: incidents-log
+      body:
+        "@timestamp": "{{now}}"
+        event.action: escalation
+        event.severity: "{{severity}}"
+        service.name: "{{service_name}}"
+        message: "Incident escalated to on-call: {{incident_summary}}"
