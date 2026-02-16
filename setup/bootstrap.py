@@ -134,9 +134,11 @@ def create_tools():
         if resp.status_code in (200, 201):
             created.append(tool_config["name"])
             print(f"     ✅ Created: {tool_config['name']}")
-        else:
-            print(f"     ⏭️  {resp.status_code}: {resp.text[:100]}")
+        elif resp.status_code == 409:
             created.append(tool_config["name"])
+            print(f"     ⏭️  Already exists: {tool_config['name']}")
+        else:
+            print(f"     ❌ Failed: {resp.status_code} {resp.text[:100]}")
 
     return created
 
@@ -167,11 +169,36 @@ def create_workflows():
         if resp.status_code in (200, 201):
             created.append(f"{wf_name}_workflow")
             print(f"     ✅ Created: {wf_name}_workflow")
-        else:
-            print(f"     ⏭️  {resp.status_code}: {resp.text[:100]}")
+        elif resp.status_code == 409:
             created.append(f"{wf_name}_workflow")
+            print(f"     ⏭️  Already exists: {wf_name}_workflow")
+        else:
+            print(f"     ❌ Failed: {resp.status_code} {resp.text[:100]}")
 
     return created
+
+
+def validate_agent_tool_bindings(available_tools: list[str]) -> bool:
+    """Fail fast if any agent references a tool that was not created/available."""
+    agents_dir = PROJECT_ROOT / "agents"
+    known = set(available_tools)
+    ok = True
+
+    for agent_file in sorted(agents_dir.glob("*.json")):
+        agent_config = json.loads(agent_file.read_text())
+        missing = [tool for tool in agent_config.get("tools", []) if tool not in known]
+        if missing:
+            ok = False
+            print(
+                f"  ❌ Invalid tool binding in {agent_file.name}: {', '.join(missing)}"
+            )
+
+    if ok:
+        print("  ✅ Agent tool bindings validated")
+    else:
+        print("  ❌ Tool binding validation failed. Fix agent config or tool names and re-run.")
+
+    return ok
 
 
 def create_agents(tool_ids: list[str]):
@@ -283,11 +310,18 @@ def main():
     wf_ids = create_workflows()
     print(f"   Total workflows: {len(wf_ids)}")
 
-    print("\n📋 Step 4: Create agents")
+    print("\n📋 Step 4: Validate agent tool bindings")
+    if not validate_agent_tool_bindings(tool_ids + wf_ids):
+        print("\n" + "=" * 60)
+        print("❌ Bootstrap aborted due to invalid agent tool bindings.")
+        print("=" * 60)
+        sys.exit(1)
+
+    print("\n📋 Step 5: Create agents")
     agents = create_agents(tool_ids + wf_ids)
     print(f"   Total agents: {len(agents)}")
 
-    print("\n📋 Step 5: Smoke test")
+    print("\n📋 Step 6: Smoke test")
     success = run_smoke_test(agents)
 
     print("\n" + "=" * 60)
