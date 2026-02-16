@@ -8,7 +8,7 @@
 
 - Repository: https://github.com/mgnlia/elastic-incident-commander
 - Live Vercel site: https://elastic-incident-commander.vercel.app
-- Latest commit (this lock packet): `{{COMMIT_SHA}}`
+- Latest commit (lock packet): https://github.com/mgnlia/elastic-incident-commander/commit/3dbe877c0d578fcbb162b057185c1509e8c3c97f
 - Previous milestone commit: https://github.com/mgnlia/elastic-incident-commander/commit/9a3b1e78766ec93095105a411ebf880e707efc38
 - CI workflow: https://github.com/mgnlia/elastic-incident-commander/actions/workflows/ci.yml
 
