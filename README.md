@@ -143,20 +143,19 @@ User service memory grows to 97% → OOM kills detected → Pod restarts trigger
 ### Scenario 3: Cascading Failure
 Inventory DB connection refused → Order service timeouts → Gateway 503s → Circuit breakers trip → Multi-service coordinated response
 
-## 📊 Judging Criteria
+## 📊 Judging Criteria (Devpost)
 
 | Criterion | Weight | Our Approach |
 |-----------|--------|-------------|
 | Effective use of Agent Builder | 30% | 5 agents, 15 tools (ES\|QL + Index + Workflow), agent-to-agent routing |
-| Creative & practical use case | 20% | Every SRE team's 3 AM nightmare — solved |
-| Technical implementation | 20% | Programmatic setup, parameterized queries, automated workflows |
-| Demo & documentation | 20% | Live dashboard, 3-min video, comprehensive docs |
-| Social sharing | 10% | Architecture diagram + demo GIF on X |
+| Creativity + practicality of use case | 30% | High-value on-call/SRE incident response with clear production relevance |
+| Technical implementation | 30% | Programmatic bootstrap, deterministic tool/workflow registration, validation guardrails |
+| Social sharing | 10% | Architecture snapshot + demo clip + submission recap on X |
 
 ## 📢 Share
 
 Share your experience with Incident Commander:
-- Tag [@elastic](https://twitter.com/elastic) on X with your project link
+- Tag [@elastic_devs](https://twitter.com/elastic_devs) on X with your project link
 
 ## 📝 License
 
