@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - name: Validate Python syntax (setup scripts)
+        run: uv run --python 3.11 python -m compileall setup
+      - name: Validate JSON definitions
+        run: |
+          uv run --python 3.11 python - <<'PY'
+          import json
+          from pathlib import Path
+
+          checked = 0
+          for folder in ("agents", "tools"):
+              base = Path(folder)
+              if not base.exists():
+                  continue
+              for file in base.rglob("*.json"):
+                  json.loads(file.read_text(encoding="utf-8"))
+                  checked += 1
+
+          print(f"Validated {checked} JSON definition files")
+          PY
