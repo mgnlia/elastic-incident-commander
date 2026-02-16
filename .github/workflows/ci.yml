@@ -30,3 +30,39 @@ jobs:
 
           print(f"Validated {checked} JSON definition files")
           PY
+      - name: Validate agent tool bindings
+        run: |
+          uv run --python 3.11 python - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          esql_tools = {
+              json.loads(path.read_text(encoding="utf-8"))["name"]
+              for path in Path("tools/esql").glob("*.json")
+          }
+          index_tools = {"logs_search", "apm_search"}
+          workflow_tools = {f"{path.stem}_workflow" for path in Path("workflows").glob("*.yaml")}
+
+          known_tools = esql_tools | index_tools | workflow_tools
+          errors = []
+
+          for agent_file in sorted(Path("agents").glob("*.json")):
+              agent = json.loads(agent_file.read_text(encoding="utf-8"))
+              for tool_name in agent.get("tools", []):
+                  if tool_name not in known_tools:
+                      errors.append(
+                          f"{agent_file}: unknown tool '{tool_name}' (not in tool/workflow definitions)"
+                      )
+
+          if errors:
+              print("Tool binding validation failed:")
+              for err in errors:
+                  print(f"- {err}")
+              sys.exit(1)
+
+          print(
+              f"Validated tool bindings for {len(list(Path('agents').glob('*.json')))} agents "
+              f"against {len(known_tools)} registered tools"
+          )
+          PY
