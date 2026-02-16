@@ -9,6 +9,22 @@
 
 ---
 
+## 🌐 Live Dashboard
+
+Explore the interactive demo without any setup:
+
+**https://elastic-incident-commander.vercel.app**
+
+- [Home](https://elastic-incident-commander.vercel.app) — Orchestration overview + scenario cards
+- [Architecture](https://elastic-incident-commander.vercel.app/architecture) — Agent pipeline + data flow
+- [Demo](https://elastic-incident-commander.vercel.app/demo) — Step-through incident simulations
+
+## 🎥 Demo Video
+
+Watch the 3-minute walkthrough: `[VIDEO_URL_PLACEHOLDER]`
+
+---
+
 ## 🏗️ Architecture
 
 ```
@@ -102,11 +118,14 @@ elastic-incident-commander/
 ├── setup/                     # Programmatic setup scripts
 │   ├── bootstrap.py          # One-click full setup
 │   └── seed_data.py          # Demo data generator
-├── dashboard/                 # Next.js demo dashboard (Vercel)
-│   └── (coming soon)
+├── dashboard/                 # Next.js demo dashboard (Vercel-deployed)
+│   ├── app/                  # Next.js app router pages
+│   ├── components/           # UI components
+│   └── package.json
 ├── docs/
 │   ├── SPEC.md               # Locked specification
 │   ├── ARCHITECTURE.md       # Architecture document
+│   ├── SUBMISSION_LOCK.md    # Submission lock packet
 │   └── MILESTONES.md         # Build timeline
 ├── pyproject.toml
 ├── .env.example
@@ -134,10 +153,15 @@ Inventory DB connection refused → Order service timeouts → Gateway 503s → 
 | Demo & documentation | 20% | Live dashboard, 3-min video, comprehensive docs |
 | Social sharing | 10% | Architecture diagram + demo GIF on X |
 
+## 📢 Share
+
+Share your experience with Incident Commander:
+- Tag [@elastic](https://twitter.com/elastic) on X with your project link
+
 ## 📝 License
 
 MIT
 
 ---
 
-Built for the [Elasticsearch Agent Builder Hackathon](https://devpost.com) 🏆
+Built for the [Elasticsearch Agent Builder Hackathon](https://elasticsearch.devpost.com) 🏆
