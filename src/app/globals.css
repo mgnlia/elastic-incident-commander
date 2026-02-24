@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #060B16;
+  --bg-card: #0D1526;
+  --border: #1A2540;
+  --elastic-blue: #0077CC;
+  --elastic-pink: #F04E98;
+  --elastic-yellow: #FEC514;
+  --elastic-green: #00BFB3;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: #E2E8F0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0D1526;
+}
+::-webkit-scrollbar-thumb {
+  background: #1A2540;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0077CC;
+}
+
+/* Glow effects */
+.glow-blue { box-shadow: 0 0 20px rgba(0, 119, 204, 0.3); }
+.glow-pink { box-shadow: 0 0 20px rgba(240, 78, 152, 0.3); }
+.glow-green { box-shadow: 0 0 20px rgba(0, 191, 179, 0.3); }
+.glow-yellow { box-shadow: 0 0 20px rgba(254, 197, 20, 0.3); }
+.glow-red { box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
+
+/* Terminal text */
+.font-mono-custom {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+/* Animated gradient border */
+.gradient-border {
+  position: relative;
+  background: linear-gradient(#0D1526, #0D1526) padding-box,
+              linear-gradient(135deg, #0077CC, #F04E98) border-box;
+  border: 1px solid transparent;
+}
+
+/* Status indicator pulse */
+.status-critical {
+  animation: criticalPulse 1s ease-in-out infinite;
+}
+
+@keyframes criticalPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Log stream animation */
+.log-line-enter {
+  animation: logEnter 0.3s ease-out;
+}
+
+@keyframes logEnter {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Chart tooltip */
+.recharts-tooltip-wrapper {
+  outline: none !important;
+}
