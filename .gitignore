@@ -1,29 +1,42 @@
-# Environment
-.env
-.env.local
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js build output
+.next/
+out/
+build/
 
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
 .venv/
-.uv/
-
-# Node (dashboard)
-node_modules/
-.next/
-out/
-
-# IDE
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Build
+venv/
+env/
 dist/
-build/
+*.egg-info/
+.eggs/
 
-# Agent IDs (generated)
-setup/agent_ids.json
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# Misc
+.DS_Store
+*.pem
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+*.tsbuildinfo
+next-env.d.ts
